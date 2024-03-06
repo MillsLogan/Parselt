@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from base_classes.entity import Entity
+from ann_reader.base_classes.entity import Entity
 
 
 @dataclass

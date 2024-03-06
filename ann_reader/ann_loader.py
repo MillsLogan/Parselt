@@ -1,6 +1,6 @@
-from base_classes.loader import Loader
-from base_classes.document import Document
-from base_classes.entity import Entity
+from ann_reader.base_classes.loader import Loader
+from ann_reader.base_classes.document import Document
+from ann_reader.base_classes.entity import Entity
 import os
 
 

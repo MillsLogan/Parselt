@@ -5,7 +5,9 @@ setup(name='ann_reader',
       description='A package for reading and working with .ann files',
       author='Logan Mills',
       url='github.com/millslogan/ann_reader',
-      packages=find_packages(['ann_reader', 'ann_reader.*']),
+      packages=find_packages(),
+      py_modules=['ann_loader'],
+      python_requires='>=3.12'
 )
 
 
