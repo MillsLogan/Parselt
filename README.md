@@ -3,7 +3,7 @@ A Python program used for reading in a processing `.ann` and `.txt` file pairs i
 # Usage
 First install the program using pip
 ```shell
-pip install ann_reader
+pip install https://github.com/MillsLogan/ann_reader
 ```
 Next, you'll want to create a `Loader` object, depending on what format your documents are in.
 > [!IMPORTANT]
