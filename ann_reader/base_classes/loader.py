@@ -10,7 +10,7 @@ class Loader(ABC):
         self.dataset = {}
     
     def __call__(self, document_path: str, annotation_path: str = None):
-        self.load()
+        self.load(document_path, annotation_path)
         
     @abstractmethod
     def load(self, document_path: str, annotation_path: str = None):
