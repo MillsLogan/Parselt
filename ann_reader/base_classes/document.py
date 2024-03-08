@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
-
+from ann_reader.base_classes.entity import Entity
+from ann_reader.base_classes.relation import Relation
+from typing import List
 
 @dataclass
 class Document:
@@ -15,8 +17,8 @@ class Document:
     
     path: str
     text: str
-    entities: list = field(default_factory=list)
-    relations: list = field(default_factory=list)
+    entities: List[Entity] = field(default_factory=list)
+    relations: List[Relation] = field(default_factory=list)
     
     
     

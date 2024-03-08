@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from ann_reader.base_classes.document import Document
+from typing import List
+import os
 
 
 class Loader(ABC):
@@ -10,7 +12,9 @@ class Loader(ABC):
     def __init__(self):
         self.dataset = {}
     
-    def __call__(self, document_path: str, annotation_path: str = None) -> Document:
+    def __call__(self, document_path: str, annotation_path: str = None) -> Document | List[Document]:
+        if os.path.isdir(document_path):
+            return self.load_all(document_path, annotation_path)
         return self.load(document_path, annotation_path)
         
     @abstractmethod
@@ -18,14 +22,18 @@ class Loader(ABC):
         pass
     
     @abstractmethod
-    def _create_document(self, document_path: str, annotation_path: str) -> list[Document]:
+    def _create_document(self, document_path: str, annotation_path: str) -> List[Document]:
+        pass
+    
+    @abstractmethod
+    def load_all(self, document_dir: str, annotation_dir: str = None) -> List[Document]:
         pass
     
     def __iter__(self) -> iter:
         return iter(self.dataset.values())
     
     @property
-    def documents(self) -> list[Document]:
+    def documents(self) -> List[Document]:
         return self.dataset.values()
     
     def __getitem__(self, key) -> Document:
