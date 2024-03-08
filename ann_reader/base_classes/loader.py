@@ -10,9 +10,18 @@ class Loader(ABC):
     '''
     
     def __init__(self):
+        '''
+        Creates a dictionary to store the loaded documents.
+        key: document name/path
+        value: Document object
+        '''
         self.dataset = {}
     
     def __call__(self, document_path: str, annotation_path: str = None) -> Document | List[Document]:
+        '''
+        Alows the user to call the object as a function to load documents.
+        If the document_path is a directory, it will call the load_all method.
+        '''
         if os.path.isdir(document_path):
             return self.load_all(document_path, annotation_path)
         return self.load(document_path, annotation_path)
@@ -31,6 +40,9 @@ class Loader(ABC):
     
     def __iter__(self) -> iter:
         return iter(self.dataset.values())
+    
+    def __next__(self) -> Document:
+        return next(self.dataset.values())
     
     @property
     def documents(self) -> List[Document]:
