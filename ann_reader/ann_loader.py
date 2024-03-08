@@ -13,7 +13,7 @@ class AnnLoader(Loader):
         '''
         super().__init__()
     
-    def load(self, document_path: str, annotation_path: str = None):
+    def load(self, document_path: str, annotation_path: str = None) -> Document:
         '''
         Load a document and its corresponding annotation file into 
         a Document object and add it to the dataset.
@@ -28,8 +28,9 @@ class AnnLoader(Loader):
             annotation_path = document_path.replace('.txt', '.ann')
         
         self.dataset[document_path] = self._create_document(document_path, annotation_path)
+        return self.dataset[document_path]
     
-    def load_all(self, document_dir: str, annotation_dir: str = None):
+    def load_all(self, document_dir: str, annotation_dir: str = None) -> list[Document]:
         '''
         Loads a directory of docuemtns and their corresponding annotation files
         into the dataset.
@@ -39,15 +40,17 @@ class AnnLoader(Loader):
             If None, the annotation files are assumed to be in the same directory as
             the document files.
         '''
+        loaded_documents = []
         if annotation_dir is None:
             annotation_dir = document_dir
         
         for document_path in os.listdir(document_dir):
             if document_path.endswith('.txt'):
                 annotation_path = document_path.replace('.txt', '.ann')
-                self.load(os.path.join(document_dir, document_path), os.path.join(annotation_dir, annotation_path))
-    
-    def _create_document(self, document_path: str, annotation_path: str):
+                loaded_documents.append(self.load(os.path.join(document_dir, document_path), os.path.join(annotation_dir, annotation_path)))
+        return loaded_documents
+                
+    def _create_document(self, document_path: str, annotation_path: str) -> Document:
         '''
         Protected method Please use the load method to create a Document object.
         
@@ -74,7 +77,7 @@ class AnnLoader(Loader):
         
         return document
                     
-    def _create_entity(self, line: str):
+    def _create_entity(self, line: str) -> Entity:
         '''
         Protected method. Please use see the load method to create a Document object.
         
