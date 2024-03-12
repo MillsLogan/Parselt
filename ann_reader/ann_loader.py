@@ -71,7 +71,6 @@ class AnnLoader(Loader):
         Takes two arguments:
         - document_path: str, the path to the document file.
         - annotation_path: str, the path to the annotation file.
-        
         '''
         with open(document_path, 'r') as f:
             text = f.read()

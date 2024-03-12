@@ -6,7 +6,7 @@ setup(name='ann_reader',
       author='Logan Mills',
       url='github.com/millslogan/ann_reader',
       packages=['ann_reader', 'ann_reader.base_classes'],
-      py_modules=['ann_loader', 'ann_reader.base_classes.document'],
+      py_modules=['ann_loader', 'ann_reader.base_classes.document', 'validator'],
       python_requires='>=3.12'
 )
 

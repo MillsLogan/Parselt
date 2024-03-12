@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 from ann_reader.base_classes.document import Document
-from typing import List
+from typing import List, Iterable
 import os
 
 
 class Loader(ABC):
     '''
     Abstract base class for loading datasets into Document objects.
+    Iterating over the loader object will return the Document objects.
     '''
     
     def __init__(self):
@@ -38,7 +39,7 @@ class Loader(ABC):
     def load_all(self, document_dir: str, annotation_dir: str = None) -> List[Document]:
         pass
     
-    def __iter__(self) -> iter:
+    def __iter__(self) -> Iterable[Document]:
         return iter(self.dataset.values())
     
     def __next__(self) -> Document:

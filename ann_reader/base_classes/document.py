@@ -3,7 +3,7 @@ from ann_reader.base_classes.entity import Entity
 from ann_reader.base_classes.relation import Relation
 from typing import List
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Document:
     '''
     A class to represent a document and its annotations.
@@ -15,10 +15,11 @@ class Document:
     '''
     
     
-    path: str
-    text: str
-    entities: List[Entity] = field(default_factory=list)
-    relations: List[Relation] = field(default_factory=list)
+    path: str = field(compare=False, hash=True)
+    text: str = field(compare=False)
+    entities: List[Entity] = field(default_factory=list, compare=False)
+    relations: List[Relation] = field(default_factory=list, compare=False)
+    
     
     
     
