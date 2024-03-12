@@ -5,6 +5,18 @@ import os
 
 
 class AnnLoader(Loader):
+    '''
+    Concrete implementation of the Loader class for loading
+    documents and their corresponding annotation files into
+    a dataset. All documents are stored in a dictionary with the document
+    path as the key and the Document object as the value.
+    You can load a single document or a directory of documents
+    into the dataset, and iterate over the loader object to
+    access the documents. When iterating over the loader object,
+    only the document objects are returned, not the keys, if you
+    want to access the keys (document path) use document.path.
+    '''
+    
     def __init__(self):
         '''
         Initialize the AnnLoader object.
