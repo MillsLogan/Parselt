@@ -75,7 +75,7 @@ class AnnLoader(Loader):
         with open(document_path, 'r') as f:
             text = f.read()
             
-        document = Document(document_path, text)
+        document = Document(document_path, document_path.split("/")[-1], text)
         
         with open(annotation_path, 'r') as f:
             for line in f:
