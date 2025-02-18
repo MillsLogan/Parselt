@@ -1,4 +1,4 @@
-from ann_reader.core.token import Token
+from parselt.core.token import Token
 
 class Entity(Token):
     def __init__(self, text: str, start: int, end: int, label: str, entity_id: int) -> None:

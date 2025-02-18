@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from ann_reader.core.entity import Entity
+from parselt.core.entity import Entity
 
 
 @dataclass

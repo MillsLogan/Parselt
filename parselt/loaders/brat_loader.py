@@ -1,10 +1,10 @@
 from __future__ import annotations
-from ..core.document_loader import DocumentLoader
-from ..core.document import Document
+from parselt.core.document_loader import DocumentLoader
+from parselt.core.document import Document
 import os
-from ..core.token import Token
-from ..core.relation import Relation
-from ..core.entity import Entity
+from parselt.core.token import Token
+from parselt.core.relation import Relation
+from parselt.core.entity import Entity
 
 
 class BratLoader(DocumentLoader):

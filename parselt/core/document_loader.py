@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ann_reader.core.document import Document
+from parselt.core.document import Document
 from typing import Generator
 import os
 from pathlib import Path

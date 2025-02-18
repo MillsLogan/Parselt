@@ -1,7 +1,8 @@
 from __future__ import annotations
-from ann_reader.core.token import Token
-from ann_reader.core.relation import Relation
-from ann_reader.core.entity import Entity
+from parselt.core.token import Token
+from parselt.core.relation import Relation
+from parselt.core.entity import Entity
+from parselt.core.tokenizer import Tokenizer
 
 class Document:
     """
@@ -35,7 +36,7 @@ class Document:
         
         return len(self.tokens) > 0
     
-    def tokenize(self, tokenizer: "Tokenizer") -> None:
+    def tokenize(self, tokenizer: Tokenizer) -> None:
         """
         Tokenizes the document using the provided tokenizer.
         
@@ -43,7 +44,38 @@ class Document:
             tokenizer (Tokenizer): The tokenizer to use for tokenization.
         """
         
-        self.tokens = tokenizer.tokenize(self.text)
+        tokens = tokenizer.tokenize(self.text)
+        self.entities.sort(key=lambda x: x.start)
+        entity_idx = 0
+        for token in tokens:
+            if entity_idx >= len(self.entities):
+                self.tokens.append(token)
+                continue
+            if self.entities[entity_idx].start <= token.start and self.entities[entity_idx].end >= token.end:
+                self.tokens.append(self.entities[entity_idx])
+                if self.entities[entity_idx].end == token.end:
+                    self.entities[entity_idx].next_char = token.next_char
+                    entity_idx += 1
+            else:
+                self.tokens.append(token)
+        self.tokens.sort(key=lambda x: x.start)
+        
+    def get_entity_by_id(self, entity_id: int) -> Entity | None:
+        """
+        Returns the entity with the specified ID.
+        
+        Args:
+            entity_id (int): The ID of the entity to retrieve.
+        
+        Returns:
+            Entity | None: The entity with the specified ID, or None if not found.
+        """
+        
+        for entity in self.entities:
+            if entity.entity_id == entity_id:
+                return entity
+        return None
+        
 
     def entity_labels(self) -> set[str]:
         """
