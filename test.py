@@ -1,7 +1,11 @@
-from ann_reader import AnnLoader
+from ann_reader import Document
+from ann_reader.loaders import BratLoader
 
-ann_reader = AnnLoader()
-ann_reader("input/test/txts", "input/test/anns")
-doc = next(iter(ann_reader.documents))
-
-print(doc.as_entity_list())
+loader = BratLoader("input/test/txts")
+for doc in loader.load_directory("input/test/anns"):
+    print(doc)
+    print(doc.text)
+    print(doc.entities)
+    print(doc.relations)
+    print()
+    exit()
