@@ -2,7 +2,6 @@ from __future__ import annotations
 from parselt.core.document_loader import DocumentLoader
 from parselt.core.document import Document
 import os
-from parselt.core.token import Token
 from parselt.core.relation import Relation
 from parselt.core.entity import Entity
 
