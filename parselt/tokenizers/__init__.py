@@ -1,0 +1,1 @@
+from parselt.tokenizers.word_tokenizer import WordTokenizer

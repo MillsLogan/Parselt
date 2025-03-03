@@ -1,57 +1,45 @@
-# ann_reader
+# Parselt
+Parselt is a flexible and extensible library designed for efficient document processing in NLP tasks. It provides tools for loading, tokenizing, and working with various document formats, such as BRAT and JSON annotations. With support for different tokenization strategies and easy integration into NLP pipelines, Parselt is a foundation for building robust text-processing workflows.
 
-A Python program for reading in a processing `.ann` and `.txt` file pairs into Python objects to make processing data seamless. Files should be in [Brat Standoff Format](https://brat.nlplab.org/standoff.html).
+## Table of Contents
+- [Parselt](#parselt)
+  - [Table of Contents](#table-of-contents)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Loading documents](#loading-documents)
+  - [Tokenizing Loaded Documents](#tokenizing-loaded-documents)
+- [Features](#features)
 
+# Installation
+To install parslet using pip:
+```bash
+pip install https://github.com/millslogan/parselt
+```
 # Usage
-
-First, install the program using pip
-
-```shell
-pip install git+https://github.com/MillsLogan/ann_reader
-```
-
-Next, you'll want to create a `Loader` object, depending on what format your documents are in.
-
-> [!IMPORTANT]
-> Currently only `.ann` files are supported with plans to incorporate `JSON` and `XML` later.
-
+## Loading documents
 ```python
-from ann_reader import AnnLoader
-loader = AnnLoader()
+from parselt.loaders import BratLoader
+
+loader = BratLoader()
+document = loader.load("path/to/document.ann")
 ```
 
-Now we can simply call the loader object with the path to the corresponding txt and ann files we'd like to process
+## Tokenizing Loaded Documents
+After loading a document, it's generally required to tokenize the text into encodable pieces. Parselt provides built-in tokenizers as well as an abstract class for users to extend and implement custom functionality.
 
+Here's how we would tokenize a loaded document based on words, and punctuation:
 ```python
-loader("path/to/txt/file.txt", "path/to/ann/file.ann")
+from parselt.tokenizers import WordTokenizer
+tokenizer = WordTokenizer()
+# document.text: "The quick brown fox (and so on)"
+# document.tokens: []
+document.tokenize(tokenizer)
+# document.tokens: [Token(The, 0, 3, " "), Token(quick, 4, 9, " "), ..., Token(fox, 16, 19, " ("), ...]
 ```
+This tokenizes the document in place, filling the `document.tokens` attribute with the resulting `Token` objects.
 
-> [!NOTE]
-> If the `.txt` and `.ann` file are in the same directory, leaving the `annotation_path` argument as `None` will default to changing the document extension like so
->
-> ```python
-> loader("path/to/txt/file.txt")
-> ```
->
-> The loader will open `path/to/txt/file.txt` and `path/to/txt/file.ann`
+# Features
+- Supports multiple document formats (BRAT, JSON)
+- Flexible tokenization (word, sentence, and more)
+- Easy extension for custom loaders and tokenizers
 
-All documents the loader processes are stored as key-value pairs where the document name is the key and the corresponding `Document` object is the value.
-
-# Objects
-## Document
-The Document object is the encapsulation of the text of the sentence or document and the corresponding entities and relationships that exist within the text. 
-### Fields
-```python
-class Document:
-    # The path to the file
-    path: str 
-
-    # The raw text from the file
-    text: str 
-    
-    # The entities from the annotation file wrapped in Entity objects stored in a list
-    entities: list[Entity] 
-
-    # The Relationships from the annotation file wrapped in Relation obejcts stored in a list
-    relations: list[Relation] 
-```

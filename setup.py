@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 
-setup(name='ann_reader',
-      version='0.1',
+setup(name='Parselt',
+      version='1.0',
       description='A package for reading and working with .ann files',
       author='Logan Mills',
-      url='github.com/millslogan/ann_reader',
-      packages=['ann_reader', 'ann_reader.base_classes'],
-      py_modules=['ann_loader', 'ann_reader.base_classes.document'],
+      url='github.com/millslogan/parselt',
+      packages=find_packages(),
+      py_modules=['parselt', 'parselt.core', 'validator'],
       python_requires='>=3.12'
 )
 
