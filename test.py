@@ -1,4 +1,3 @@
-from parselt import Document
 from parselt.loaders import BratLoader
 from parselt.tokenizers import WordTokenizer
 

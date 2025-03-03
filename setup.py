@@ -5,8 +5,8 @@ setup(name='Parselt',
       description='A package for reading and working with .ann files',
       author='Logan Mills',
       url='github.com/millslogan/parselt',
-      packages=['parselt', 'parselt.base_classes'],
-      py_modules=['parselt', 'parselt.base_classes.document', 'validator'],
+      packages=find_packages(),
+      py_modules=['parselt', 'parselt.core', 'validator'],
       python_requires='>=3.12'
 )
 
