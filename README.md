@@ -13,7 +13,7 @@ Parselt is a flexible and extensible library designed for efficient document pro
 # Installation
 To install parslet using pip:
 ```bash
-pip install parselt
+pip install https://github.com/millslogan/parselt
 ```
 # Usage
 ## Loading documents
