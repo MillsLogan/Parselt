@@ -30,6 +30,14 @@ class Relation:
     
     def __str__(self):
         return f'R{self.id}\t{self.label} Arg1:T{self.arg_1.entity_id} Arg2:T{self.arg_2.entity_id}'
+    
+    def __getitem__(self, key):
+        if key == 0:
+            return self.arg_1
+        elif key == 1:
+            return self.arg_2
+        else:
+            raise IndexError("Index out of range.")
 
 
         
