@@ -70,11 +70,10 @@ class BratLoader(DocumentLoader):
         
         parts = line.strip().split("\t")
         relation_id = int(parts[0][1:])
-        label = parts[1]
-        arg_1, arg_2 = parts[2].split(" ")
+        label, arg_1, arg_2 = parts[1].split(" ")
         
-        arg_1_id = int(arg_1[1:])
-        arg_2_id = int(arg_2[1:])
+        arg_1_id = int(arg_1[6:])
+        arg_2_id = int(arg_2[6:])
         
         arg_1_token = next((entity for entity in named_entities if entity.entity_id == arg_1_id), None)
         arg_2_token = next((entity for entity in named_entities if entity.entity_id == arg_2_id), None)
