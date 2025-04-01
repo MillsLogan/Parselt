@@ -27,6 +27,9 @@ class Relation:
         
         if not isinstance(self.arg_1, Entity) or not isinstance(self.arg_2, Entity):
             raise ValueError("Arguments must be entities.")
+        
+        # Replace spaces with underscores
+        self.label = self.label.replace(" ", "_")
     
     def __str__(self):
         return f'R{self.id}\t{self.label} Arg1:T{self.arg_1.entity_id} Arg2:T{self.arg_2.entity_id}'

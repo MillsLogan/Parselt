@@ -17,6 +17,15 @@ class Entity(Token):
         self.label: str = label
         self.entity_id: int = entity_id
         
+    def __post_init__(self) -> None:
+        """
+        Checks that the entity ID is not None.
+        """
+        if self.entity_id is None:
+            raise ValueError("Entity ID cannot be None.")
+        
+        self.label = self.label.replace(" ", "_")
+        
     def __repr__(self) -> str:
         """
         Returns a string representation of the Entity object.
