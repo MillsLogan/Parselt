@@ -1,9 +1,9 @@
 from __future__ import annotations
 from parselt.loaders.base_loader import BaseLoader
 from parselt.core.document import Document
-import os
 from parselt.core.relation import Relation
 from parselt.core.entity import Entity
+import os
 
 
 class BratLoader(BaseLoader):

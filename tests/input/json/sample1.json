@@ -1,0 +1,12 @@
+{
+    "document": "tests/input/json/sample1.json",
+    "text": "Barack Obama was born in Hawaii and later became the President of the United States.",
+    "entities": [
+      { "id": 1, "label": "Person", "text": "Barack Obama", "start": 0, "end": 12 },
+      { "id": 2, "label": "Location", "text": "Hawaii", "start": 25, "end": 31 },
+      { "id": 3, "label": "Title", "text": "President", "start": 53, "end": 62 },
+      { "id": 4, "label": "Location", "text": "United States", "start": 70, "end": 85 }
+    ],
+    "relations": []
+}
+  

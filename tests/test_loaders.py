@@ -1,17 +1,12 @@
 import unittest
-from parselt.loaders import BratLoader
+from parselt.loaders import BratLoader, JSONLoader
 from parselt import Document
 
-class TestBratLoader(unittest.TestCase):
-    def test_load_file_invalid_format(self):
-        loader = BratLoader()
-        document = loader.load_file("tests/input/brat/joined/sample1.txt")
-        assert document is None
-
-    def helper_test_load_sample1(self, document: Document, directory: str = "tests/input/brat/joined"):
+class LoaderTestCase(unittest.TestCase):
+    def helper_test_load_sample1(self, document: Document, directory: str = "tests/input/brat/joined", extension: str = ".ann"):
         self.assertNotEqual(document, None)
         self.assertEqual(document.id, "sample1")
-        self.assertEqual(document.path, f"{directory}/sample1.ann")
+        self.assertEqual(document.path, f"{directory}/sample1{extension}")
         self.assertEqual(document.text.strip(), "Barack Obama was born in Hawaii and later became the President of the United States.")
         self.assertEqual(len(document.entities), 4)
         self.assertEqual(len(document.relations), 0)
@@ -36,10 +31,10 @@ class TestBratLoader(unittest.TestCase):
         self.assertEqual(document.entities[2].entity_id, 3)
         self.assertEqual(document.entities[3].entity_id, 4)
 
-    def helper_test_load_sample2(self, document: Document, directory: str = "tests/input/brat/joined"):
+    def helper_test_load_sample2(self, document: Document, directory: str = "tests/input/brat/joined", extension: str = ".ann"):
         self.assertNotEqual(document, None)
         self.assertEqual(document.id, "sample2")
-        self.assertEqual(document.path, f"{directory}/sample2.ann")
+        self.assertEqual(document.path, f"{directory}/sample2{extension}")
         self.assertEqual(document.text.strip(), "Elon Musk founded SpaceX in 2002. He is also the CEO of Tesla.")
         self.assertEqual(len(document.entities), 4)
         self.assertEqual(len(document.relations), 2)
@@ -69,6 +64,12 @@ class TestBratLoader(unittest.TestCase):
         self.assertEqual(document.entities[1].entity_id, 2)
         self.assertEqual(document.entities[2].entity_id, 3)
         self.assertEqual(document.entities[3].entity_id, 4)
+
+class TestBratLoader(LoaderTestCase):
+    def test_load_file_invalid_format(self):
+        loader = BratLoader()
+        document = loader.load_file("tests/input/brat/joined/sample1.txt")
+        assert document is None
 
     def test_load_file_no_text_dir(self):
         loader = BratLoader()
@@ -100,7 +101,16 @@ class TestBratLoader(unittest.TestCase):
             elif document.id == "sample2":
                 self.helper_test_load_sample2(document, directory="tests/input/brat/anns")
 
-
+class JSON_Loader(LoaderTestCase):
+    def test_json_load_sample1(self):
+        loader = JSONLoader()
+        document = loader.load_file("tests/input/json/sample1.json")
+        self.helper_test_load_sample1(document, directory="tests/input/json", extension=".json")
+        
+    def test_json_load_sample2(self):
+        loader = JSONLoader()
+        document = loader.load_file("tests/input/json/sample2.json")
+        self.helper_test_load_sample2(document, directory="tests/input/json", extension=".json")
 
 if __name__ == "__main__":
     unittest.main()

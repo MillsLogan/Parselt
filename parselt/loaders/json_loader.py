@@ -1,4 +1,4 @@
-from parselt import Document
+from parselt import Document, Entity, Relation
 from parselt.loaders.base_loader import BaseLoader
 import json
 import os
@@ -129,7 +129,9 @@ class JSONLoader(BaseLoader):
         entities = self._parse_entities(data)
         relations = self._parse_relations(data, entities)
         
-        document = Document(id=data[self.default_schema.file_key], path=data[self.default_schema.file_key], text=text, entities=entities, relations=relations)
+        doc_id = os.path.basename(data[self.default_schema.file_key].split(".")[0])
+        
+        document = Document(id=doc_id, path=data[self.default_schema.file_key], text=text, entities=entities, relations=relations)
         return document
         
     def _parse_entities(self, data: dict) -> list[dict]:
@@ -147,10 +149,12 @@ class JSONLoader(BaseLoader):
         parsed_entities = []
         
         for entity in entities:
-            parsed_entity = {
-                key: entity[value] for key, value in self.default_schema.entity_fields.items()
-            }
-            parsed_entities.append(parsed_entity)
+            entity_id = entity[self.default_schema.entity_fields["id"]]
+            entity_label = entity[self.default_schema.entity_fields["label"]]
+            entity_text = entity[self.default_schema.entity_fields["text"]]
+            entity_start = entity[self.default_schema.entity_fields["start"]]
+            entity_end = entity[self.default_schema.entity_fields["end"]]
+            parsed_entities.append(Entity(entity_text, entity_start, entity_end, label=entity_label, entity_id=entity_id))
         
         return parsed_entities
     
@@ -170,9 +174,13 @@ class JSONLoader(BaseLoader):
         parsed_relations = []
         
         for relation in relations:
-            parsed_relation = {
-                key: relation[value] for key, value in self.default_schema.relationship_fields.items()
-            }
+            relation_id = relation[self.default_schema.relationship_fields["id"]]
+            relation_type = relation[self.default_schema.relationship_fields["type"]]
+            arg1_id = relation[self.default_schema.relationship_fields["arg1"]]
+            arg2_id = relation[self.default_schema.relationship_fields["arg2"]]
+            arg1_entity = next((entity for entity in entities if entity.entity_id == arg1_id), None)
+            arg2_entity = next((entity for entity in entities if entity.entity_id == arg2_id), None)
+            parsed_relation = Relation(relation_id, relation_type, arg1_entity, arg2_entity)
             parsed_relations.append(parsed_relation)
         
         return parsed_relations
