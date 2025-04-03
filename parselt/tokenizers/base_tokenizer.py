@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from parselt.core.token import Token
 import re
 
-class Tokenizer(ABC):
+class BaseTokenizer(ABC):
     """
     An abstract base class for tokenizers, defining the interface for tokenization.
     """

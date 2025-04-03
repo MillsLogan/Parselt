@@ -1,4 +1,5 @@
-from parselt import DocumentLoader, Document
+from parselt import Document
+from parselt.loaders.base_loader import BaseLoader
 import json
 import os
 
@@ -41,7 +42,7 @@ class JSONAnnotationSchema:
     }
 
 
-class JSONLoader(DocumentLoader):
+class JSONLoader(BaseLoader):
     """
     A loader for reading JSON files containing text and annotations.
 

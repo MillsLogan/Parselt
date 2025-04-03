@@ -1,0 +1,6 @@
+T1	Person 0 9	Elon Musk
+T2	Organization 18 24	SpaceX
+T3	Organization 56 61	Tesla
+T4	Date 28 32	2002
+R1	Founder Arg1:T1 Arg2:T2
+R2	CEO Arg1:T1 Arg2:T3

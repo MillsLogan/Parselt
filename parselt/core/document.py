@@ -2,7 +2,7 @@ from __future__ import annotations
 from parselt.core.token import Token
 from parselt.core.relation import Relation
 from parselt.core.entity import Entity
-from parselt.core.tokenizer import Tokenizer
+from parselt.tokenizers.base_tokenizer import BaseTokenizer
 
 class Document:
     """
@@ -36,7 +36,7 @@ class Document:
         
         return len(self.tokens) > 0
     
-    def tokenize(self, tokenizer: Tokenizer) -> None:
+    def tokenize(self, tokenizer: BaseTokenizer) -> None:
         """
         Tokenizes the document using the provided tokenizer.
         

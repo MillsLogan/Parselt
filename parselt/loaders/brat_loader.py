@@ -1,12 +1,12 @@
 from __future__ import annotations
-from parselt.core.document_loader import DocumentLoader
+from parselt.loaders.base_loader import BaseLoader
 from parselt.core.document import Document
 import os
 from parselt.core.relation import Relation
 from parselt.core.entity import Entity
 
 
-class BratLoader(DocumentLoader):
+class BratLoader(BaseLoader):
     """
     A class for loading documents from the BRAT format.
     
@@ -52,7 +52,7 @@ class BratLoader(DocumentLoader):
             text = text_file.read()
         
         # Create a Document object
-        document = Document(id=os.path.basename(document_path), path=document_path, 
+        document = Document(id=os.path.basename(document_path.split(".")[0]), path=document_path, 
                             text=text, entities=named_entities, relations=relations)
         return document
                 
