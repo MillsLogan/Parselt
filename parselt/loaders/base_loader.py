@@ -4,7 +4,7 @@ from typing import Generator
 import os
 from pathlib import Path
 
-class DocumentLoader(ABC):
+class BaseLoader(ABC):
     """
     Abstract base class for loading documents from files.
     """

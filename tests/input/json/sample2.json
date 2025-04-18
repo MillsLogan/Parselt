@@ -1,0 +1,15 @@
+{
+    "document": "tests/input/json/sample2.json",
+    "text": "Elon Musk founded SpaceX in 2002. He is also the CEO of Tesla.",
+    "entities": [
+      { "id": 1, "label": "Person", "text": "Elon Musk", "start": 0, "end": 9 },
+      { "id": 2, "label": "Organization", "text": "SpaceX", "start": 18, "end": 24 },
+      { "id": 3, "label": "Organization", "text": "Tesla", "start": 56, "end": 61 },
+      { "id": 4, "label": "Date", "text": "2002", "start": 28, "end": 32 }
+    ],
+    "relations": [
+      { "id": 1, "type": "Founder", "arg1": 1, "arg2": 2 },
+      { "id": 2, "type": "CEO", "arg1": 1, "arg2": 3 }
+    ]
+}
+  

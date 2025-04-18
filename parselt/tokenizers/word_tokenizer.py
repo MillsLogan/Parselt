@@ -1,8 +1,8 @@
-from parselt.core.tokenizer import Tokenizer
+from parselt.tokenizers.base_tokenizer import BaseTokenizer
 from parselt.core.token import Token
 import re
 
-class WordTokenizer(Tokenizer):
+class WordTokenizer(BaseTokenizer):
     """
     Tokenizer that splits text into words based on whitespace and punctuation.
     """

@@ -1,6 +1,8 @@
-from parselt import DocumentLoader, Document
+from parselt import Document, Entity, Relation
+from parselt.loaders.base_loader import BaseLoader
 import json
 import os
+from intervaltree import Interval, IntervalTree
 
 
 class JSONAnnotationSchema:
@@ -41,7 +43,7 @@ class JSONAnnotationSchema:
     }
 
 
-class JSONLoader(DocumentLoader):
+class JSONLoader(BaseLoader):
     """
     A loader for reading JSON files containing text and annotations.
 
@@ -99,15 +101,15 @@ class JSONLoader(DocumentLoader):
         if isinstance(data, list):
             docs = []
             for doc_obj in data:
-                docs.append(self.parse_json_document(doc_obj))
+                docs.append(self.parse_json_document(doc_obj, file_path))
             return docs
         elif isinstance(data, dict):
-            return self.parse_json_document(data)
+            return self.parse_json_document(data, file_path)
         else:
             raise ValueError("Invalid JSON format. Expected a dictionary or a list of dictionaries.")
         
         
-    def parse_json_document(self, data: dict) -> Document:
+    def parse_json_document(self, data: dict, file_path: str) -> Document:
         """
         Parses JSON data into a Document object.
 
@@ -128,10 +130,12 @@ class JSONLoader(DocumentLoader):
         entities = self._parse_entities(data)
         relations = self._parse_relations(data, entities)
         
-        document = Document(id=data[self.default_schema.file_key], path=data[self.default_schema.file_key], text=text, entities=entities, relations=relations)
+        doc_id = os.path.basename(data[self.default_schema.file_key].split(".")[0])
+        
+        document = Document(id=doc_id, path=file_path, text=text, entities=entities, relations=relations)
         return document
         
-    def _parse_entities(self, data: dict) -> list[dict]:
+    def _parse_entities(self, data: dict) -> list[Interval]:
         """
         Parses entity annotations from the JSON data.
 
@@ -146,14 +150,16 @@ class JSONLoader(DocumentLoader):
         parsed_entities = []
         
         for entity in entities:
-            parsed_entity = {
-                key: entity[value] for key, value in self.default_schema.entity_fields.items()
-            }
-            parsed_entities.append(parsed_entity)
+            entity_id = entity[self.default_schema.entity_fields["id"]]
+            entity_label = entity[self.default_schema.entity_fields["label"]]
+            entity_text = entity[self.default_schema.entity_fields["text"]]
+            entity_start = entity[self.default_schema.entity_fields["start"]]
+            entity_end = entity[self.default_schema.entity_fields["end"]]
+            parsed_entities.append(Interval(begin=entity_start, end=entity_end, data=Entity(entity_text, entity_start, entity_end, label=entity_label, entity_id=entity_id)))
         
         return parsed_entities
     
-    def _parse_relations(self, data: dict, entities: list[dict]) -> list[dict]:
+    def _parse_relations(self, data: dict, entity_intervals: list[Interval]) -> list[dict]:
         """
         Parses relationship annotations from the JSON data.
 
@@ -169,9 +175,27 @@ class JSONLoader(DocumentLoader):
         parsed_relations = []
         
         for relation in relations:
-            parsed_relation = {
-                key: relation[value] for key, value in self.default_schema.relationship_fields.items()
-            }
+            relation_id = relation[self.default_schema.relationship_fields["id"]]
+            relation_type = relation[self.default_schema.relationship_fields["type"]]
+            arg1_id = relation[self.default_schema.relationship_fields["arg1"]]
+            arg2_id = relation[self.default_schema.relationship_fields["arg2"]]
+            
+            arg1_token = None
+            arg2_token = None
+            for interval in entity_intervals:
+                entity: Entity = interval.data
+                assert isinstance(entity, Entity)
+                if entity.entity_id == arg1_id:
+                    arg1_token = entity
+                elif entity.entity_id == arg2_id:
+                    arg2_token = entity
+                if arg1_token and arg2_token:
+                    break
+            else:
+                raise ValueError(f"Entities {arg1_id} and {arg2_id} not found in the document.")
+            
+            
+            parsed_relation = Relation(relation_id, relation_type, arg1_token, arg2_token)
             parsed_relations.append(parsed_relation)
         
         return parsed_relations
