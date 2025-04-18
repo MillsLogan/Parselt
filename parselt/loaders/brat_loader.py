@@ -4,6 +4,7 @@ from parselt.core.document import Document
 from parselt.core.relation import Relation
 from parselt.core.entity import Entity
 import os
+from intervaltree import Interval, IntervalTree
 
 
 class BratLoader(BaseLoader):
@@ -42,7 +43,6 @@ class BratLoader(BaseLoader):
                 elif line.startswith("R"):
                     relations.append(self._parse_relation(line, named_entities))
                 
-                
         # Load the text file
         text_file_path = document_path.replace(".ann", ".txt")
         if self.text_dir:
@@ -53,10 +53,10 @@ class BratLoader(BaseLoader):
         
         # Create a Document object
         document = Document(id=os.path.basename(document_path.split(".")[0]), path=document_path, 
-                            text=text, entities=named_entities, relations=relations)
+                            text=text, entities=IntervalTree(named_entities), relations=relations)
         return document
                 
-    def _parse_relation(self, line: str, named_entities: list[Entity]) -> Relation:
+    def _parse_relation(self, line: str, entity_intervals: list[Interval]) -> Relation:
         """
         Parse a relation line from the annotation file.
         
@@ -75,28 +75,42 @@ class BratLoader(BaseLoader):
         arg_1_id = int(arg_1[6:])
         arg_2_id = int(arg_2[6:])
         
-        arg_1_token = next((entity for entity in named_entities if entity.entity_id == arg_1_id), None)
-        arg_2_token = next((entity for entity in named_entities if entity.entity_id == arg_2_id), None)
+        arg_1_token = None
+        arg_2_token = None
+        
+        for interval in entity_intervals:
+            entity: Entity = interval.data
+            assert isinstance(entity, Entity)
+            if entity.entity_id == arg_1_id:
+                arg_1_token = entity
+            elif entity.entity_id == arg_2_id:
+                arg_2_token = entity
+            if arg_1_token and arg_2_token:
+                break
+        else:
+            raise ValueError(f"Entities {arg_1_id} and {arg_2_id} not found in the document.")
         
         return Relation(relation_id, label, arg_1_token, arg_2_token)
                     
-    def _parse_term(self, line: str) -> Entity:
+    def _parse_term(self, line: str) -> Interval:
         """
         Parse a term line from the annotation file.
         
         Args:
             line (str): The line to parse.
             
-        Returns:
-            Entity: The parsed entity.
+        Returns: 
+
         """
         
         parts = line.strip().split("\t")
         entity_id = int(parts[0][1:])
         label, start, end = parts[1].split(" ")
         text = parts[2]
+        start = int(start)
+        end = int(end)
         
-        return Entity(text, int(start), int(end), label=label, entity_id=entity_id)
+        return Interval(begin=start, end=end, data=Entity(text, start, end, label, entity_id))
             
         
         

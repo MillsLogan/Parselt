@@ -7,6 +7,7 @@ class Token:
         start (int): The start index of the token in the document.
         end (int): The end index of the token in the document.
         next_char (str | None): The next character after the token, if any, defaults to " ".
+        label (str | None): The label of the token, if any.
     """
     
     def __init__(self, text: str, start: int, end: int, 
@@ -16,6 +17,7 @@ class Token:
         self.start: int = start
         self.end: int = end
         self.next_char: str = next_char if next_char is not None else " "
+        self.label: str | None = None
         
     def __hash__(self) -> int:
         """

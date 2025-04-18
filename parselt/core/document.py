@@ -3,6 +3,7 @@ from parselt.core.token import Token
 from parselt.core.relation import Relation
 from parselt.core.entity import Entity
 from parselt.tokenizers.base_tokenizer import BaseTokenizer
+from intervaltree import IntervalTree
 
 class Document:
     """
@@ -17,12 +18,12 @@ class Document:
         tokens (list): A list of tokens in the document, as processed by a Tokenizer.    
     """
     
-    def __init__(self, id: int, path: str, text: str, entities: list, relations: list, tokens: list | None=None) -> None:
+    def __init__(self, id: int, path: str, text: str, entities: IntervalTree, relations: list, tokens: list | None=None) -> None:
         self.id: int = id
         self.path: str = path
         self.text: str = text
         self.relations: list[Relation] = relations
-        self.entities: list[Entity] = entities
+        self.entities: IntervalTree = entities
         self.tokens: list[Token] = tokens if tokens is not None else []
         
     @property
@@ -36,7 +37,10 @@ class Document:
         
         return len(self.tokens) > 0
     
-    def tokenize(self, tokenizer: BaseTokenizer) -> None:
+    def tokenize(self, 
+                 tokenizer: BaseTokenizer, 
+                 default_label: str = "O",
+                 use_bio_labeling: bool = False) -> None:
         """
         Tokenizes the document using the provided tokenizer.
         
@@ -44,21 +48,23 @@ class Document:
             tokenizer (Tokenizer): The tokenizer to use for tokenization.
         """
         
-        tokens = tokenizer.tokenize(self.text)
-        self.entities.sort(key=lambda x: x.start)
-        entity_idx = 0
+        tokens = tokenizer(self.text)
         for token in tokens:
-            if entity_idx >= len(self.entities):
-                self.tokens.append(token)
-                continue
-            if self.entities[entity_idx].start <= token.start and self.entities[entity_idx].end >= token.end:
-                self.tokens.append(self.entities[entity_idx])
-                if self.entities[entity_idx].end == token.end:
-                    self.entities[entity_idx].next_char = token.next_char
-                    entity_idx += 1
+            token.label = default_label
+            entity_match = self.entities.overlap(token.start, token.end)
+            if entity_match:
+                entity: Entity = entity_match.pop().data
+                token.label = entity.label
+                if use_bio_labeling:
+                    if token.start == entity.start:
+                        token.label = "B-" + entity.label
+                    else:
+                        token.label = "I-" + entity.label
             else:
-                self.tokens.append(token)
-        self.tokens.sort(key=lambda x: x.start)
+                token.label = default_label
+                
+        self.tokens = tokens
+        
         
     def get_entity_by_id(self, entity_id: int) -> Entity | None:
         """
@@ -72,7 +78,7 @@ class Document:
         """
         
         for entity in self.entities:
-            if entity.entity_id == entity_id:
+            if entity.data.entity_id == entity_id:
                 return entity
         return None
         

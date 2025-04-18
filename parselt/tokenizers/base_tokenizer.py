@@ -26,6 +26,20 @@ class BaseTokenizer(ABC):
         self.normalize_whitespace = normalize_whitespace
         self.remove_stopwords = remove_stopwords
         self.tokenize_numbers = tokenize_numbers
+        
+    def __call__(self, text: str) -> list[Token]:
+        """
+        Preprocess and tokenize the input text.
+        
+        Args:
+            text (str): The text to tokenize.
+            
+        Returns:
+            list[Token]: A list of tokens.
+        """
+        
+        preprocessed_text = self.preprocess(text)
+        return self.tokenize(preprocessed_text)
     
     @abstractmethod
     def tokenize(self, text: str) -> list[Token]:
@@ -38,6 +52,7 @@ class BaseTokenizer(ABC):
         Returns:
             list[Token]: A list of tokens.
         """
+        
         pass
     
     def preprocess(self, text: str) -> str:
